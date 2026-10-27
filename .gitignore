@@ -1,0 +1,45 @@
+# ==============================================================================
+# WordPress & Development .gitignore
+# ==============================================================================
+
+# Archivos de configuración local con credenciales
+wp-config-local.php
+
+# Backups y volcados de Base de Datos
+*.sql
+*.sql.gz
+*.tar.gz
+*.zip
+backup_*.sql
+copia_seguridad.sql
+
+# Logs de depuración y servidores
+*.log
+wp-content/debug.log
+error_log
+php_error.log
+
+# Entornos y variables
+.env
+.env.local
+
+# Subidas de medios en local (opcional según flujo de trabajo)
+# wp-content/uploads/*
+# !wp-content/uploads/.gitkeep
+
+# Cachés y temporizadores de sistema
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Dependencias de paquetes si se compilan
+node_modules/
+vendor/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
