@@ -154,6 +154,161 @@ Configurar PHP, extensiones y MariaDB como servicios de Windows manualmente suel
 
 ---
 
+## 🎨 Cambiar el tema con WP-CLI
+
+Ejecuta estos comandos desde la carpeta que contiene `wp-config.php`, con MariaDB/MySQL activo. Antes de cambiar el tema, crea una copia de seguridad y comprueba qué temas están instalados:
+
+```bash
+wp db export backup-antes-del-tema.sql
+wp theme list
+```
+
+### Dónde encontrar temas instalables
+
+El catálogo oficial y gratuito de temas está en [wordpress.org/themes](https://wordpress.org/themes/). Puedes filtrar por funciones, diseño y tipo de sitio, abrir la ficha de cada tema para revisar capturas, descripción y requisitos, y probar una vista previa antes de decidir.
+
+También puedes explorar e instalar temas desde el escritorio de WordPress: **Apariencia → Temas → Añadir un tema nuevo**. Busca por nombre o filtra el catálogo; selecciona **Vista previa** para probarlo y **Instalar** cuando quieras añadirlo. Instalarlo no lo activa automáticamente: después elige **Activar**.
+
+Existen temas comerciales en sitios de sus propios desarrolladores y mercados de terceros. Antes de instalar uno, verifica que provenga de una fuente de confianza, que sea compatible con tu versión de WordPress y que tenga actualizaciones recientes y soporte. Evita paquetes de temas obtenidos de sitios no oficiales.
+
+### Instalar y activar un tema
+
+Desde WP-CLI puedes instalar un tema del catálogo oficial indicando su *slug* (el identificador que aparece en la ficha o en la URL del catálogo):
+
+```bash
+wp theme install twentytwentyfour
+wp theme activate twentytwentyfour
+```
+
+O instalarlo y activarlo en un solo comando:
+
+```bash
+wp theme install twentytwentyfour --activate
+```
+
+Para un tema comercial o propio que tengas como archivo ZIP, cárgalo desde **Apariencia → Temas → Añadir un tema nuevo → Subir tema**, o usa WP-CLI con la ruta al ZIP:
+
+```bash
+wp theme install /ruta/al/tema.zip --activate
+```
+
+No descomprimas el archivo dentro de la carpeta de temas si el ZIP contiene documentación u otros archivos; usa la opción de instalación para que WordPress procese el paquete.
+
+Para activar uno de los temas que ya incluye esta instalación:
+
+```bash
+wp theme activate twentytwentyfive
+```
+
+El tema cambia la presentación, no elimina las entradas, páginas ni medios de la biblioteca. Sin embargo, menús, widgets y plantillas personalizadas pueden variar entre temas; revisa la portada y las páginas después del cambio. Para ver cuál está activo:
+
+```bash
+wp theme list --status=active
+```
+
+## 📝 Crear y publicar contenido con WP-CLI
+
+Puedes crear primero un borrador y revisar el contenido antes de hacerlo público:
+
+```bash
+# Crear una página como borrador
+wp post create \
+  --post_type=page \
+  --post_title="Acerca de este sitio" \
+  --post_status=draft
+
+# Usa el ID que devolvió el comando anterior para revisar y publicar
+wp post get ID --fields=ID,post_title,post_status
+wp post update ID --post_status=publish
+```
+
+Reemplaza `ID` por el número que devolvió `wp post create`, por ejemplo `42`.
+
+Para publicar una entrada directamente, cambia `--post_type=page` por `--post_type=post` y `--post_status=draft` por `--post_status=publish`. Comprueba el contenido público en el sitio después de publicar:
+
+```bash
+wp post list --post_status=publish --fields=ID,post_type,post_title,url
+```
+
+Publicar una entrada o página la hace visible según los ajustes de privacidad y visibilidad del sitio. **No publica por sí solo el sitio en Internet.**
+
+## 🧪 Publicar una copia en una URL de pruebas
+
+Para compartir una versión de prueba, crea un **staging** (una copia independiente del sitio) en un alojamiento compatible con WordPress. Muchos alojamientos ofrecen una función de staging con una URL temporal, o puedes crear un subdominio como `pruebas.midominio.com`. Si aún no tienes dominio, algunos alojamientos proporcionan una URL temporal. La URL y los pasos para crearla dependen del proveedor; busca en su panel opciones como **Staging**, **Clonar sitio** o **URL temporal**.
+
+No uses `wp server --port=8080` como sitio público: es un servidor de desarrollo local. Tampoco abras directamente a Internet tu equipo de desarrollo para compartir una prueba. La opción recomendada es el staging del alojamiento, con su propio directorio y una base de datos separada.
+
+### Opciones gratuitas
+
+| Servicio | Para qué sirve | Límites importantes |
+|---|---|---|
+| [InfinityFree](https://www.infinityfree.com/) | Alojamiento gratuito con PHP y MySQL, subdominio incluido y opción de instalar WordPress. Es la opción a considerar si quieres probar una instalación WordPress autohospedada como la de este repositorio. | Los recursos y el soporte de un plan gratuito son limitados; consulta sus condiciones vigentes y conserva copias propias. No lo elegiría para un sitio crítico o con tráfico importante sin comprobar antes su rendimiento y políticas. |
+| [WordPress.com](https://wordpress.com/free/) | Crear rápidamente un sitio con dirección gratuita bajo `wordpress.com`, sin configurar PHP, base de datos ni servidor. | En el plan gratuito se muestran anuncios. No permite instalar plugins ni subir temas de terceros, así que no es el lugar adecuado para ejecutar íntegramente un proyecto autohospedado con personalizaciones propias. |
+| [TasteWP](https://tastewp.com/) | Crear un WordPress temporal para probar un tema o plugin y compartir una demostración. | Es un entorno de prueba, no un alojamiento para mantener publicado el sitio de forma permanente. |
+
+**Recomendación para este proyecto:** si quieres probar esta instalación y conservar la posibilidad de usar temas o plugins propios, empieza por un hosting PHP/MySQL como InfinityFree y crea allí una instalación independiente. Si solo quieres enseñar una maqueta rápidamente, WordPress.com es más sencillo; para una prueba desechable de un tema, usa TasteWP. Las condiciones de los planes gratuitos pueden cambiar, así que confírmalas con el proveedor antes de migrar.
+
+### Pasos generales
+
+1. Crea el sitio de pruebas desde el panel del alojamiento y configura HTTPS. Protege el acceso con contraseña o con controles de acceso del proveedor si solo debe verlo tu equipo.
+2. Haz un respaldo de la base de datos y de los archivos del sitio. En el sitio local, desde el directorio de WordPress:
+
+   ```bash
+   wp db export backup-staging.sql
+   ```
+
+3. Copia al staging los archivos de WordPress necesarios, incluido `wp-content/uploads`, junto con el tema y los plugins. Importa el respaldo en la base de datos **vacía y exclusiva del staging** desde el panel del alojamiento o con WP-CLI:
+
+   ```bash
+   wp db import backup-staging.sql
+   ```
+
+   Configura el `wp-config.php` del staging con las credenciales de esa base de datos, no con las del entorno local ni con las de producción.
+
+4. Desde el directorio de WordPress del staging, reemplaza la URL local por la URL de prueba. Sustituye ambas direcciones por las reales de tu instalación:
+
+   ```bash
+   wp search-replace 'http://localhost:8080' 'https://pruebas.midominio.com' --skip-columns=guid
+   wp option update home 'https://pruebas.midominio.com'
+   wp option update siteurl 'https://pruebas.midominio.com'
+   wp core is-installed
+   ```
+
+   `wp search-replace` actualiza también datos serializados de WordPress. No hagas un reemplazo de URL en producción sin un respaldo previo.
+
+5. Impide que los buscadores indexen la copia y comprueba su configuración de privacidad en **Ajustes → Lectura**:
+
+   ```bash
+   wp option update blog_public 0
+   ```
+
+   Este ajuste es una solicitud a los buscadores, **no** protege el sitio ni garantiza que no se indexe. Para una prueba privada, añade también contraseña o restricción de acceso desde el alojamiento.
+
+6. Visita la URL de pruebas y revisa inicio de sesión, páginas, imágenes, enlaces, formularios y vista móvil. Comprueba especialmente que correos, pagos, webhooks y otras integraciones no afecten a usuarios reales. No copies credenciales de producción si el entorno de pruebas no las necesita.
+
+Mantén la base de datos y los archivos del staging separados de producción. Al terminar la prueba, elimina el staging desde el panel del alojamiento o actualízalo siguiendo el flujo de trabajo de ese proveedor.
+
+## 🌍 Preparar un sitio para producción
+
+Para que el sitio sea accesible públicamente necesitas un alojamiento con PHP y MariaDB/MySQL, un dominio configurado y HTTPS. `wp server` es un servidor temporal de desarrollo: no lo expongas como servidor de producción.
+
+Antes de migrar, realiza una copia de la base de datos y conserva también los archivos del sitio, especialmente `wp-content/uploads`, los temas y los plugins:
+
+```bash
+wp db export backup-antes-de-migrar.sql
+```
+
+En el servidor de destino, instala o copia los archivos, importa la base de datos y configura `wp-config.php` con las credenciales de producción. Desde la carpeta de WordPress en el servidor, actualiza las URL usando WP-CLI, que gestiona correctamente los datos serializados:
+
+```bash
+wp search-replace 'http://localhost:8080' 'https://midominio.com' --skip-columns=guid
+wp option update home 'https://midominio.com'
+wp option update siteurl 'https://midominio.com'
+wp core is-installed
+```
+
+Sustituye `https://midominio.com` por el dominio real. Verifica que DNS y HTTPS estén configurados, inicia sesión en `/wp-admin` y revisa páginas, imágenes, enlaces permanentes y formularios. Guarda una copia de seguridad antes de reemplazar URL o importar una base de datos.
+
 ## ⚡ Comandos Universales WP-CLI (Comunes a todos los sistemas)
 
 Una vez que el sitio está descargado y configurado con la base de datos (sea en Linux, Mac o Windows/WSL), estos comandos funcionan exactamente igual en todos los sistemas operativos:
@@ -169,8 +324,9 @@ wp core install --url=http://localhost:8080 --title="Mi Proyecto" --admin_user=a
 wp plugin install woocommerce --activate
 wp plugin install elementor --activate
 
-# 4. Instalar y activar un tema
-wp theme install astra --activate
+# 4. Ver temas y activar uno ya instalado
+wp theme list
+wp theme activate twentytwentyfive
 
 # 5. Exportar copia de seguridad de la base de datos
 wp db export backup.sql
@@ -178,8 +334,8 @@ wp db export backup.sql
 # 6. Importar base de datos
 wp db import backup.sql
 
-# 7. Cambiar URLs (por ejemplo al subir a producción)
-wp search-replace 'http://localhost:8080' 'https://midominio.com'
+# 7. Cambiar URLs con seguridad (por ejemplo, al migrar a producción)
+wp search-replace 'http://localhost:8080' 'https://midominio.com' --skip-columns=guid
 ```
 
 ---

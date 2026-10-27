@@ -193,6 +193,24 @@ Abre la aplicación **Local** desde tu carpeta de Aplicaciones, crea un nuevo si
 
 ## 8. Comandos Esenciales de Gestión (WP-CLI)
 
+Ejecuta WP-CLI desde el directorio del proyecto. Puedes consultar los temas instalados y activar el tema predeterminado de WordPress:
+
+```bash
+cd ~/Desktop/mi-sitio
+wp theme list
+wp theme activate twentytwentyfive
+```
+
+Para crear una página en borrador y publicarla cuando esté revisada:
+
+```bash
+wp post create --post_type=page --post_title="Acerca de este sitio" --post_status=draft
+# Sustituye 42 por el ID que devolvió el comando anterior
+wp post update 42 --post_status=publish
+```
+
+La publicación de una entrada o página no hace que el sitio esté disponible en Internet. Para cambiar el tema, publicar contenido y desplegar el sitio en un alojamiento, consulta la [guía multiplataforma de WP-CLI](../GUIA_MULTIPLATAFORMA.md). El servidor `wp server` descrito en esta guía es solo de desarrollo local.
+
 ### Copias de Seguridad y Base de Datos
 ```bash
 # Exportar respaldo

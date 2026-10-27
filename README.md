@@ -82,6 +82,28 @@ Si recibes un error `Error establishing a database connection`, arranca MariaDB:
 
 ---
 
+## 🎨 Temas, publicación y despliegue con WP-CLI
+
+Desde la carpeta del proyecto, WP-CLI permite cambiar el tema activo, crear borradores y publicar páginas o entradas. Antes de cambios importantes, exporta la base de datos:
+
+```bash
+wp db export backup-antes-del-cambio.sql
+wp theme list
+wp theme activate twentytwentyfive
+```
+
+Para publicar contenido, créalo como borrador y cambia su estado cuando lo hayas revisado:
+
+```bash
+wp post create --post_type=page --post_title="Acerca de este sitio" --post_status=draft
+# Sustituye 42 por el ID que devolvió el comando anterior
+wp post update 42 --post_status=publish
+```
+
+Cambiar el estado publica esa página o entrada, pero **no pone el sitio en Internet**. Para desplegar el sitio se necesita alojamiento compatible con WordPress, dominio, HTTPS, archivos del sitio y migración de la base de datos. `wp server --port=8080` es solo para desarrollo local, no para producción. La [guía multiplataforma](GUIA_MULTIPLATAFORMA.md) contiene los pasos y comandos para cambiar temas y preparar contenido o una migración a producción.
+
+---
+
 ## 🏛️ Arquitectura y Gobernanza del Proyecto
 
 El desarrollo de este blog sigue el protocolo de arquitectura técnica documentado en los siguientes archivos clave:

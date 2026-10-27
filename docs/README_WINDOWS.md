@@ -193,6 +193,25 @@ git config --global core.autocrlf input
 
 Todos estos comandos funcionan tanto en la terminal de **Ubuntu (WSL2)** como en **PowerShell** si tienes instalado WP-CLI:
 
+Desde la carpeta del proyecto, consulta los temas instalados y activa el tema predeterminado de WordPress:
+
+```bash
+wp theme list
+wp theme activate twentytwentyfive
+```
+
+Para crear una página en borrador y publicarla tras revisarla:
+
+```bash
+wp post create --post_type=page --post_title="Acerca de este sitio" --post_status=draft
+# Sustituye 42 por el ID que devolvió el comando anterior
+wp post update 42 --post_status=publish
+```
+
+Estos comandos también funcionan en PowerShell nativo si WP-CLI está instalado y ejecutas desde la carpeta del sitio.
+
+La publicación de una entrada o página no hace que el sitio esté disponible en Internet. Para cambiar temas, publicar contenido y preparar un despliegue a un alojamiento, consulta la [guía multiplataforma de WP-CLI](../GUIA_MULTIPLATAFORMA.md). `wp server` es solo un servidor de desarrollo local, no de producción.
+
 ```bash
 # Ver estado del sitio
 wp core is-installed
