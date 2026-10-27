@@ -1,6 +1,6 @@
 # 🍏 Guía de Instalación, Configuración y Uso en macOS
 
-Esta guía detalla paso a paso cómo montar, configurar y operar el entorno de desarrollo del **Blog de Recetas de Cocina (WordPress)** en **macOS** (compatible con procesadores Apple Silicon **M1/M2/M3/M4** e **Intel**).
+Esta guía detalla cómo instalar y operar un entorno de desarrollo **WordPress** en **macOS** (compatible con procesadores Apple Silicon **M1/M2/M3/M4** e **Intel**).
 
 ---
 
@@ -110,10 +110,10 @@ Dentro de la consola SQL, ejecuta:
 CREATE DATABASE IF NOT EXISTS misitio_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- 2. Crear usuario 'admin' con la contraseña del proyecto
-CREATE USER IF NOT EXISTS 'admin'@'localhost' IDENTIFIED BY 'secreto123';
+CREATE USER IF NOT EXISTS 'wp_user'@'localhost' IDENTIFIED BY 'CAMBIA_ESTA_CLAVE';
 
 -- 3. Otorgar permisos completos
-GRANT ALL PRIVILEGES ON misitio_db.* TO 'admin'@'localhost';
+GRANT ALL PRIVILEGES ON misitio_db.* TO 'wp_user'@'localhost';
 
 -- 4. Aplicar cambios y salir
 FLUSH PRIVILEGES;
@@ -135,8 +135,8 @@ Si configuras el entorno desde cero:
 ```bash
 wp config create \
   --dbname=misitio_db \
-  --dbuser=admin \
-  --dbpass=secreto123 \
+  --dbuser=wp_user \
+  --dbpass='CAMBIA_ESTA_CLAVE' \
   --dbhost=127.0.0.1 \
   --locale=es_ES
 ```
@@ -148,9 +148,9 @@ wp config create \
 ```bash
 wp core install \
   --url="http://localhost:8080" \
-  --title="Blog de Recetas de Cocina" \
+  --title="Mi Sitio WordPress" \
   --admin_user="dev" \
-  --admin_password="PasswordSegura2026!" \
+  --admin_password="CAMBIA_ESTA_CLAVE" \
   --admin_email="dev@misitio.local" \
   --skip-email
 ```
@@ -172,8 +172,7 @@ wp server --port=8080
 
 * **Sitio público:** [http://localhost:8080](http://localhost:8080)
 * **Panel de administración:** [http://localhost:8080/wp-admin](http://localhost:8080/wp-admin)
-  * **Usuario:** `dev`
-  * **Contraseña:** `PasswordSegura2026!`
+  * **Usuario y contraseña:** los que configuraste durante la instalación.
 
 ### Detener el servidor
 Presiona **`Ctrl + C`** en la terminal donde corre el proceso.
@@ -220,13 +219,12 @@ wp db export backup_$(date +%Y%m%d).sql
 wp db import backup_20261027.sql
 ```
 
-### Contenido de Prueba de Recetas
+### Crear una página de prueba
 ```bash
-# Crear receta con campos personalizados
-wp post create --post_type=receta \
-  --post_title="Tarta de Queso La Viña" \
-  --post_status=publish \
-  --meta_input='{"_receta_tiempo_preparacion":"PT20M","_receta_tiempo_coccion":"PT50M","_receta_porciones":8,"_receta_dificultad":"Fácil"}'
+# Crear un borrador de página de presentación
+wp post create --post_type=page \
+  --post_title="Acerca de este sitio" \
+  --post_status=draft
 ```
 
 ---

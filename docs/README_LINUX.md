@@ -1,6 +1,6 @@
 # 🐧 Guía de Instalación, Configuración y Uso en Linux
 
-Esta guía detalla paso a paso cómo montar, configurar y operar el entorno de desarrollo del **Blog de Recetas de Cocina (WordPress)** en distribuciones Linux (**CachyOS / Arch Linux**, **Ubuntu / Debian** y **Fedora**).
+Esta guía detalla cómo instalar y operar un entorno de desarrollo **WordPress** en distribuciones Linux (**CachyOS / Arch Linux**, **Ubuntu / Debian** y **Fedora**).
 
 ---
 
@@ -81,7 +81,7 @@ sudo mv wp-cli.phar /usr/local/bin/wp
 
 ## 3. Configuración del Motor PHP
 
-WordPress requiere límites de memoria adecuados para compresión de imágenes, plugins de recetas y operaciones de base de datos.
+WordPress requiere límites de memoria adecuados para la administración, procesamiento de imágenes y operaciones de base de datos.
 
 ### 1. Localizar el archivo `php.ini`
 Ejecuta:
@@ -143,10 +143,10 @@ Dentro de la consola interactiva de MariaDB, copia y pega las siguientes sentenc
 CREATE DATABASE IF NOT EXISTS misitio_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- 2. Crear usuario 'admin' con la contraseña del proyecto
-CREATE USER IF NOT EXISTS 'admin'@'localhost' IDENTIFIED BY 'secreto123';
+CREATE USER IF NOT EXISTS 'wp_user'@'localhost' IDENTIFIED BY 'CAMBIA_ESTA_CLAVE';
 
 -- 3. Otorgar permisos completos sobre la base de datos
-GRANT ALL PRIVILEGES ON misitio_db.* TO 'admin'@'localhost';
+GRANT ALL PRIVILEGES ON misitio_db.* TO 'wp_user'@'localhost';
 
 -- 4. Aplicar cambios y salir
 FLUSH PRIVILEGES;
@@ -168,8 +168,8 @@ Si estás clonando el repositorio por primera vez y no dispones de `wp-config.ph
 ```bash
 wp config create \
   --dbname=misitio_db \
-  --dbuser=admin \
-  --dbpass=secreto123 \
+  --dbuser=wp_user \
+  --dbpass='CAMBIA_ESTA_CLAVE' \
   --dbhost=localhost \
   --locale=es_ES
 ```
@@ -180,9 +180,9 @@ Ejecuta la instalación inicial definiendo el usuario administrador del panel:
 ```bash
 wp core install \
   --url="http://localhost:8080" \
-  --title="Blog de Recetas de Cocina" \
+  --title="Mi Sitio WordPress" \
   --admin_user="dev" \
-  --admin_password="PasswordSegura2026!" \
+  --admin_password="CAMBIA_ESTA_CLAVE" \
   --admin_email="dev@misitio.local" \
   --skip-email
 ```
@@ -206,8 +206,7 @@ wp server --port=8080
 
 * **Sitio público:** [http://localhost:8080](http://localhost:8080)
 * **Panel de administración:** [http://localhost:8080/wp-admin](http://localhost:8080/wp-admin)
-  * **Usuario:** `dev`
-  * **Contraseña:** `PasswordSegura2026!`
+  * **Usuario y contraseña:** los que configuraste durante la instalación.
 
 ### Detener el servidor
 En la terminal donde esté corriendo, presiona **`Ctrl + C`**.
@@ -261,13 +260,12 @@ wp db import backup_20261027.sql
 wp db cli
 ```
 
-### Creación de Contenido para Recetas
+### Crear una página de prueba
 ```bash
-# Crear una receta de prueba con metadatos
-wp post create --post_type=receta \
-  --post_title="Risotto de Setas Silvestres" \
-  --post_status=publish \
-  --meta_input='{"_receta_tiempo_preparacion":"PT15M","_receta_tiempo_coccion":"PT25M","_receta_porciones":4,"_receta_dificultad":"Media"}'
+# Crear un borrador de página de presentación
+wp post create --post_type=page \
+  --post_title="Acerca de este sitio" \
+  --post_status=draft
 ```
 
 ### Regeneración de Medios

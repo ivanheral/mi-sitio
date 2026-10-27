@@ -1,6 +1,6 @@
 # 🪟 Guía de Instalación, Configuración y Uso en Windows
 
-Esta guía detalla paso a paso cómo montar, configurar y operar el entorno de desarrollo del **Blog de Recetas de Cocina (WordPress)** en **Windows 10** y **Windows 11**.
+Esta guía detalla cómo instalar y operar un entorno de desarrollo **WordPress** en **Windows 10** y **Windows 11**.
 
 En Windows existen dos métodos principales para trabajar:
 * **Método 1 (Recomendado para Desarrolladores): WSL2 (Subsistema de Linux)** — Idéntico a Linux, máximo rendimiento y compatibilidad nativa con WP-CLI.
@@ -74,8 +74,8 @@ sudo mariadb
 Ejecuta las instrucciones SQL del proyecto:
 ```sql
 CREATE DATABASE IF NOT EXISTS misitio_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-CREATE USER IF NOT EXISTS 'admin'@'localhost' IDENTIFIED BY 'secreto123';
-GRANT ALL PRIVILEGES ON misitio_db.* TO 'admin'@'localhost';
+CREATE USER IF NOT EXISTS 'wp_user'@'localhost' IDENTIFIED BY 'CAMBIA_ESTA_CLAVE';
+GRANT ALL PRIVILEGES ON misitio_db.* TO 'wp_user'@'localhost';
 FLUSH PRIVILEGES;
 EXIT;
 ```
@@ -86,14 +86,14 @@ EXIT;
 cd ~/mi-sitio
 
 # Crear wp-config.php si no existe
-wp config create --dbname=misitio_db --dbuser=admin --dbpass=secreto123 --locale=es_ES
+wp config create --dbname=misitio_db --dbuser=wp_user --dbpass='CAMBIA_ESTA_CLAVE' --locale=es_ES
 
 # Instalar WordPress
 wp core install \
   --url="http://localhost:8080" \
-  --title="Blog de Recetas de Cocina" \
+  --title="Mi Sitio WordPress" \
   --admin_user="dev" \
-  --admin_password="PasswordSegura2026!" \
+  --admin_password="CAMBIA_ESTA_CLAVE" \
   --admin_email="dev@misitio.local" \
   --skip-email
 
@@ -168,7 +168,7 @@ mysqld --console
 ```
 En otra pestaña de PowerShell:
 ```powershell
-mysql -u root -e "CREATE DATABASE misitio_db; CREATE USER 'admin'@'localhost' IDENTIFIED BY 'secreto123'; GRANT ALL PRIVILEGES ON misitio_db.* TO 'admin'@'localhost';"
+mysql -u root -e "CREATE DATABASE misitio_db; CREATE USER 'wp_user'@'localhost' IDENTIFIED BY 'CAMBIA_ESTA_CLAVE'; GRANT ALL PRIVILEGES ON misitio_db.* TO 'wp_user'@'localhost';"
 ```
 
 ### Paso 4: Arrancar WordPress
@@ -219,11 +219,10 @@ wp core is-installed
 # Exportar copia de seguridad de la base de datos
 wp db export copia_seguridad.sql
 
-# Crear receta gastronómica de prueba
-wp post create --post_type=receta \
-  --post_title="Gazpacho Andaluz Tradicional" \
-  --post_status=publish \
-  --meta_input='{"_receta_tiempo_preparacion":"PT15M","_receta_tiempo_coccion":"PT0M","_receta_porciones":6,"_receta_dificultad":"Fácil"}'
+# Crear un borrador de página de presentación
+wp post create --post_type=page \
+  --post_title="Acerca de este sitio" \
+  --post_status=draft
 ```
 
 ---

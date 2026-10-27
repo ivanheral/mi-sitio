@@ -44,15 +44,16 @@ sudo mariadb-install-db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
 # Iniciar el servicio y habilitarlo al arranque
 sudo systemctl enable --now mariadb
 
-# Crear la base de datos y usuario para WordPress
-sudo mariadb -e "CREATE DATABASE misitio_db; CREATE USER 'admin'@'localhost' IDENTIFIED BY 'secreto123'; GRANT ALL PRIVILEGES ON misitio_db.* TO 'admin'@'localhost';"
+# Crear la base de datos y usuario para WordPress.
+# Reemplaza CAMBIA_ESTA_CLAVE por una contraseña única antes de ejecutar.
+sudo mariadb -e "CREATE DATABASE misitio_db; CREATE USER 'wp_user'@'localhost' IDENTIFIED BY 'CAMBIA_ESTA_CLAVE'; GRANT ALL PRIVILEGES ON misitio_db.* TO 'wp_user'@'localhost';"
 ```
 
 #### Paso 4: Descargar y arrancar WordPress
 ```bash
 mkdir -p ~/Escritorio/mi-sitio && cd ~/Escritorio/mi-sitio
 wp core download
-wp config create --dbname=misitio_db --dbuser=admin --dbpass=secreto123
+wp config create --dbname=misitio_db --dbuser=wp_user --dbpass='CAMBIA_ESTA_CLAVE'
 wp server --port=8080
 ```
 
@@ -86,15 +87,15 @@ Homebrew gestiona los servicios en segundo plano con `brew services`:
 # Iniciar MariaDB como servicio del sistema
 brew services start mariadb
 
-# Crear base de datos y usuario
-mariadb -u root -e "CREATE DATABASE misitio_db; CREATE USER 'admin'@'localhost' IDENTIFIED BY 'secreto123'; GRANT ALL PRIVILEGES ON misitio_db.* TO 'admin'@'localhost';"
+# Crear base de datos y usuario (cambia el marcador por una clave única)
+mariadb -u root -e "CREATE DATABASE misitio_db; CREATE USER 'wp_user'@'localhost' IDENTIFIED BY 'CAMBIA_ESTA_CLAVE'; GRANT ALL PRIVILEGES ON misitio_db.* TO 'wp_user'@'localhost';"
 ```
 
 #### Paso 4: Descargar y arrancar WordPress
 ```bash
 mkdir -p ~/Desktop/mi-sitio && cd ~/Desktop/mi-sitio
 wp core download
-wp config create --dbname=misitio_db --dbuser=admin --dbpass=secreto123
+wp config create --dbname=misitio_db --dbuser=wp_user --dbpass='CAMBIA_ESTA_CLAVE'
 wp server --port=8080
 ```
 
@@ -129,12 +130,12 @@ WSL2 ejecuta un kernel de Linux real dentro de Windows con rendimiento nativo.
    
    # Iniciar MariaDB
    sudo service mariadb start
-   sudo mariadb -e "CREATE DATABASE misitio_db; CREATE USER 'admin'@'localhost' IDENTIFIED BY 'secreto123'; GRANT ALL PRIVILEGES ON misitio_db.* TO 'admin'@'localhost';"
+   sudo mariadb -e "CREATE DATABASE misitio_db; CREATE USER 'wp_user'@'localhost' IDENTIFIED BY 'CAMBIA_ESTA_CLAVE'; GRANT ALL PRIVILEGES ON misitio_db.* TO 'wp_user'@'localhost';"
    
    # Crear sitio y correr servidor
    mkdir ~/mi-sitio && cd ~/mi-sitio
    wp core download
-   wp config create --dbname=misitio_db --dbuser=admin --dbpass=secreto123
+   wp config create --dbname=misitio_db --dbuser=wp_user --dbpass='CAMBIA_ESTA_CLAVE'
    wp server --port=8080
    ```
 4. Abre `http://localhost:8080` en tu navegador habitual de Windows (Edge, Chrome, Firefox).
